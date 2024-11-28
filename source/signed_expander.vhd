@@ -12,5 +12,8 @@ end signed_expander;
 architecture Behavioral of signed_expander is
 begin
     vect_out(3 downto 0) <= vect_in;
-    vect_out(7 downto 4) <= vect_in(3);
+    vect_out(4) <= vect_in(3);
+    vect_out(5) <= vect_in(3);
+    vect_out(6) <= vect_in(3);
+    vect_out(7) <= vect_in(3);
 end Behavioral;

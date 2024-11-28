@@ -3,10 +3,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 -- Test bench entity
-entity full_adder_tb is
-end full_adder_tb;
+entity tb_full_adder is
+end tb_full_adder;
 
-architecture Behavioral of full_adder_tb is
+architecture Behavioral of tb_full_adder is
 
     -- Component declaration for the Full Adder
     component full_adder

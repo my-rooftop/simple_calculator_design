@@ -12,7 +12,7 @@ entity adder_8bit is
 end adder_8bit;
 
 architecture Behavioral of adder_8bit is
-    signal Carry : STD_LOGIC_VECTOR(7 downto 0);
+    signal Carry : STD_LOGIC_VECTOR(8 downto 0);
 begin
     Carry(0) <= '0';
     FA0: entity work.full_adder port map(A => vect_in(0), B => vect_in2(0), Cin => Carry(0), Sum => vect_out(0), Cout => Carry(1));
