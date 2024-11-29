@@ -14,7 +14,8 @@ entity ALU_mul is
     );
 end ALU_mul;
 
-architecture Behavioral of ALU_add is
+architecture Behavioral of ALU_mul is
+
     component adder_8bit
         Port (
             vect_in1 : in STD_LOGIC_VECTOR(7 downto 0); -- 첫 번째 8비트 입력
@@ -45,8 +46,12 @@ architecture Behavioral of ALU_add is
     signal vect_in1_comp_expended : STD_LOGIC_VECTOR(7 downto 0);
     signal vect_in2_comp_expended : STD_LOGIC_VECTOR(7 downto 0);
     signal addicant : STD_LOGIC_VECTOR(7 downto 0);
+    signal vect_out_buf : STD_LOGIC_VECTOR(7 downto 0);
+    signal vect_out_buf2 : STD_LOGIC_VECTOR(7 downto 0);
+    signal vect_out_comp : STD_LOGIC_VECTOR(7 downto 0);
+    signal vect_out_comp_buf : STD_LOGIC_VECTOR(7 downto 0);
     signal acc_vect : STD_LOGIC_VECTOR(7 downto 0);
-    signal state : INTEGER range 0 to 2 := 0;
+    signal state : INTEGER range 0 to 3 := 0;
     signal count : INTEGER range 0 to 3 := 0;
     signal sign : STD_LOGIC;
 begin
@@ -57,7 +62,9 @@ begin
     CM0: two_complement port map(vect_in => vect_in1_complement, vect_out => vect_in1_comp_expended);
     CM1: two_complement port map(vect_in => vect_in2_complement, vect_out => vect_in2_comp_expended);
 
-    AD0: adder_8bit port map(vect_in1 => addicant, vect_in2 => acc_vect, vect_out => vect_out);
+    CM2: two_complement port map(vect_in => vect_out_comp, vect_out => vect_out_comp_buf);
+
+    AD0: adder_8bit port map(vect_in1 => addicant, vect_in2 => acc_vect, vect_out => vect_out_buf);
 
     process (clk, rst)
     begin
@@ -69,6 +76,8 @@ begin
             vect_in1_comp_expended <= (others => '0');
             vect_in2_comp_expended <= (others => '0');
             addicant <= (others => '0');
+            vect_out_buf <= (others => '0');
+            vect_out_buf2 <= (others => '0');
             acc_vect <= (others => '0');
             state <= 0;
             count <= 0;
@@ -81,15 +90,15 @@ begin
                     sign <= vect_in1(3) XOR vect_in2(3);
                     vect_in1_origin <= vect_in1;
                     vect_in2_origin <= vect_in2;
-                    if vect_in1_origin(7) = '1' then
-                        vect_in1_complement <= vect_in1_expended
+                    if vect_in1_origin(3) = '1' then
+                        vect_in1_complement <= vect_in1_expended;
                     else 
-                        vect_in1_comp_expended <= vect_in1_expended
+                        vect_in1_comp_expended <= vect_in1_expended;
                     end if;
-                    if vect_in2_origin(7) = '1' then
-                        vect_in2_complement <= vect_in2_expended
+                    if vect_in2_origin(3) = '1' then
+                        vect_in2_complement <= vect_in2_expended;
                     else
-                        vect_in2_comp_expended <= vect_in2_expended
+                        vect_in2_comp_expended <= vect_in2_expended;
                     end if;
                     acc_vect <= (others => '0');
                     count <= 0;
@@ -99,19 +108,33 @@ begin
                         count <= count + 1;
                         if vect_in2_comp_expended(0) = '1' then
                             addicant <= vect_in1_comp_expended;
-                            acc_vect <= vect_out;
+                            vect_out_buf2 <= vect_out_buf;
+                            acc_vect <= vect_out_buf2;
                         else
-                            vect_in1_comp_expended <= vect_in1_compended SLL 1;
-                            vect_in2_comp_expended <= vect_in2_comp_expended SRL 1;
+                            vect_in1_comp_expended <= vect_in1_comp_expended(6 downto 0) & '0';
+                            vect_in2_comp_expended <= '0' & vect_in2_comp_expended(7 downto 1);
                         end if;
                     else
                         state <= 2;
                     end if;
                 when 2 =>
+                    state <= 3;
+                    -- vect_out <= vect_out_buf;
+                    if sign = '1' then 
+                        vect_out_comp <= vect_out_buf;
+                    end if
+                when 3 =>
+                    if sign = '1' then
+                        vect_out <= vect_out_buf;
+                    else
+                        vect_out <= vect_out_comp;
+                    end if
                     done <= '1';
+                    state <= 0;
+                when others =>
+                    done <= '0'; -- 기본 동작
                     state <= 0;
             end case;
         end if;
     end process;
-
 end Behavioral;

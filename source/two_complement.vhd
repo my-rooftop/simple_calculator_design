@@ -17,5 +17,5 @@ architecture Behavioral of two_complement is
     signal constant_one : STD_LOGIC_VECTOR(7 downto 0) := "00000001";
 begin
     one_complement <= vect_in XOR "11111111";
-    ADD: entity work.adder_8bit port map(vect_in => one_complement, vect_in2 => constant_one, vect_out => vect_out);
+    ADD: entity work.adder_8bit port map(vect_in1 => one_complement, vect_in2 => constant_one, vect_out => vect_out);
 end Behavioral;
