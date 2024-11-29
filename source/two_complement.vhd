@@ -13,7 +13,7 @@ end two_complement;
 
 -- 2's Complement의 아키텍처 구현
 architecture Behavioral of two_complement is
-    signal one_complement : STD_LOGIC_VECTOR(7 downto 0);
+    signal one_complement : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
     signal constant_one : STD_LOGIC_VECTOR(7 downto 0) := "00000001";
 begin
     one_complement <= vect_in XOR "11111111";
