@@ -122,13 +122,13 @@ begin
                     -- vect_out <= vect_out_buf;
                     if sign = '1' then 
                         vect_out_comp <= vect_out_buf;
-                    end if
+                    end if;
                 when 3 =>
                     if sign = '1' then
                         vect_out <= vect_out_buf;
                     else
                         vect_out <= vect_out_comp;
-                    end if
+                    end if;
                     done <= '1';
                     state <= 0;
                 when others =>
