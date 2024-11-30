@@ -13,6 +13,8 @@ architecture Behavioral of ALU_mul_debug_tb is
             rst : in STD_LOGIC;
             vect_in1 : in STD_LOGIC_VECTOR(3 downto 0);
             vect_in2 : in STD_LOGIC_VECTOR(3 downto 0);
+            vect_in1_expended_out : out STD_LOGIC_VECTOR(7 downto 0);
+            vect_in2_expended_out : out STD_LOGIC_VECTOR(7 downto 0);
             vect_out : out STD_LOGIC_VECTOR(7 downto 0);
             done : out STD_LOGIC
         );
@@ -23,6 +25,8 @@ architecture Behavioral of ALU_mul_debug_tb is
     signal rst_tb : STD_LOGIC := '0';
     signal vect_in1_tb : STD_LOGIC_VECTOR(3 downto 0) := (others => '0');
     signal vect_in2_tb : STD_LOGIC_VECTOR(3 downto 0) := (others => '0');
+    signal vect_out_expended1_tb : STD_LOGIC_VECTOR(7 downto 0);
+    signal vect_out_expended2_tb : STD_LOGIC_VECTOR(7 downto 0);
     signal vect_out_tb : STD_LOGIC_VECTOR(7 downto 0);
     signal done_tb : STD_LOGIC;
 
@@ -36,6 +40,8 @@ begin
         rst => rst_tb,
         vect_in1 => vect_in1_tb,
         vect_in2 => vect_in2_tb,
+        vect_in1_expended_out => vect_out_expended1_tb,
+        vect_in2_expended_out => vect_out_expended2_tb,
         vect_out => vect_out_tb,
         done => done_tb
     );

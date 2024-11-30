@@ -8,13 +8,17 @@ architecture Behavioral of tb_ALU_sub is
     -- DUT (Device Under Test) 신호 선언
     signal vect_in1  : STD_LOGIC_VECTOR(3 downto 0);
     signal vect_in2  : STD_LOGIC_VECTOR(3 downto 0);
+    signal vect_in1_expended_out : STD_LOGIC_VECTOR(7 downto 0);
+    signal vect_in2_expended_out : STD_LOGIC_VECTOR(7 downto 0);
     signal vect_out  : STD_LOGIC_VECTOR(7 downto 0);
 
     -- DUT 선언
     component ALU_sub
         Port (
-            vect_in1 : in STD_LOGIC_VECTOR(3 downto 0);
-            vect_in2 : in STD_LOGIC_VECTOR(3 downto 0);
+            vect_in1 : in STD_LOGIC_VECTOR(3 downto 0); -- 첫 번째 8비트 입력
+            vect_in2 : in STD_LOGIC_VECTOR(3 downto 0); -- 두 번째 8비트 입력
+            vect_in1_expended_out : out STD_LOGIC_VECTOR(7 downto 0);
+            vect_in2_expended_out : out STD_LOGIC_VECTOR(7 downto 0);
             vect_out : out STD_LOGIC_VECTOR(7 downto 0)
         );
     end component;
@@ -24,6 +28,8 @@ begin
         Port map (
             vect_in1 => vect_in1,
             vect_in2 => vect_in2,
+            vect_in1_expended_out => vect_in1_expended_out,
+            vect_in2_expended_out => vect_in2_expended_out,
             vect_out => vect_out
         );
 

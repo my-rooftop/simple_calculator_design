@@ -8,6 +8,8 @@ entity ALU_mul is
         rst : in STD_LOGIC;
         vect_in1 : in STD_LOGIC_VECTOR(3 downto 0);
         vect_in2 : in STD_LOGIC_VECTOR(3 downto 0);
+        vect_in1_expended_out : out STD_LOGIC_VECTOR(7 downto 0);
+        vect_in2_expended_out : out STD_LOGIC_VECTOR(7 downto 0);
         vect_out : out STD_LOGIC_VECTOR(7 downto 0);
         done : out STD_LOGIC
     );
@@ -104,6 +106,8 @@ begin
             acc_vect <= (others => '0');
             vect_in1_done <= (others => '0');
             vect_in2_done <= (others => '0');
+            vect_in1_expended_out <= (others => '0');
+            vect_in2_expended_out <= (others => '0');
             sign <= '0';
             state <= 0;
             done <= '0';
@@ -183,8 +187,8 @@ begin
                     done <= '1';
                     count <= 0;
                     state <= 0;
-
-
+                    vect_in1_expended_out <= vect_in1_expended;
+                    vect_in2_expended_out <= vect_in2_expended;
                 when others =>
                     state <= 0;
                     done <= '0';
