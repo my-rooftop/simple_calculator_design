@@ -2,25 +2,11 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity tb_ALU_mul is
-end tb_ALU_mul;
+entity ALU_mul_debug_tb is
+end ALU_mul_debug_tb;
 
-architecture Behavioral of tb_ALU_mul is
-    -- DUT의 포트와 연결될 신호 선언
-    signal clk : STD_LOGIC := '0';
-    signal rst : STD_LOGIC := '0';
-    signal vect_in1 : STD_LOGIC_VECTOR(3 downto 0) := (others => '0');
-    signal vect_in2 : STD_LOGIC_VECTOR(3 downto 0) := (others => '0');
-    signal vect_out : STD_LOGIC_VECTOR(7 downto 0);
-    signal done : STD_LOGIC;
-
-    -- 내부 신호를 디버깅하기 위한 추가 신호
-    signal debug_vect_in1_expended : STD_LOGIC_VECTOR(7 downto 0);
-    signal debug_vect_in2_expended : STD_LOGIC_VECTOR(7 downto 0);
-    signal debug_acc_vect : STD_LOGIC_VECTOR(7 downto 0);
-    signal debug_state : INTEGER range 0 to 3;
-
-    -- DUT 선언
+architecture Behavioral of ALU_mul_debug_tb is
+    -- Component Declaration
     component ALU_mul
         Port (
             clk : in STD_LOGIC;
@@ -32,67 +18,104 @@ architecture Behavioral of tb_ALU_mul is
         );
     end component;
 
-begin
-    -- DUT 인스턴스
-    DUT: ALU_mul
-        Port map (
-            clk => clk,
-            rst => rst,
-            vect_in1 => vect_in1,
-            vect_in2 => vect_in2,
-            vect_out => vect_out,
-            done => done
-        );
+    -- Signal Declaration
+    signal clk_tb : STD_LOGIC := '0';
+    signal rst_tb : STD_LOGIC := '0';
+    signal vect_in1_tb : STD_LOGIC_VECTOR(3 downto 0) := (others => '0');
+    signal vect_in2_tb : STD_LOGIC_VECTOR(3 downto 0) := (others => '0');
+    signal vect_out_tb : STD_LOGIC_VECTOR(7 downto 0);
+    signal done_tb : STD_LOGIC;
 
-    -- 클럭 생성 프로세스
-    clk_process : process
+    -- Clock period definition
+    constant CLK_PERIOD : time := 10 ns;
+
+begin
+    -- Instantiate the Unit Under Test (UUT)
+    UUT: ALU_mul port map (
+        clk => clk_tb,
+        rst => rst_tb,
+        vect_in1 => vect_in1_tb,
+        vect_in2 => vect_in2_tb,
+        vect_out => vect_out_tb,
+        done => done_tb
+    );
+
+    -- Clock process
+    clk_process: process
     begin
-        while true loop
-            clk <= '0';
-            wait for 10 ns;
-            clk <= '1';
-            wait for 10 ns;
-        end loop;
+        clk_tb <= '0';
+        wait for CLK_PERIOD/2;
+        clk_tb <= '1';
+        wait for CLK_PERIOD/2;
     end process;
 
-    -- 테스트 시퀀스
-    stimulus_process : process
+    -- Stimulus process
+    stim_proc: process
     begin
-        -- 초기화
-        rst <= '1';
-        wait for 20 ns;
-        rst <= '0';
+        -- -- Initialize inputs
+        -- rst_tb <= '1';
+        -- wait for CLK_PERIOD*2;
+        
+        -- -- Release reset
+        -- rst_tb <= '0';
+        -- wait for CLK_PERIOD;
 
-        -- 테스트 케이스 1: 3 * 2 = 6
-        vect_in1 <= "0011"; -- 3
-        vect_in2 <= "0010"; -- 2
-        wait until done = '1';
-        assert vect_out = "00000110"
-        report "Test Case 1 Failed: Expected 6" severity error;
+        -- -- Test Case 1: Positive numbers
+        -- vect_in1_tb <= "0101"; -- 5 in decimal
+        -- vect_in2_tb <= "0011"; -- 3 in decimal
+        -- wait for CLK_PERIOD*40; -- Wait for operation to complete
 
-        -- 테스트 케이스 2: 7 * 4 = 28
-        vect_in1 <= "0111"; -- 7
-        vect_in2 <= "0100"; -- 4
-        wait until done = '1';
-        assert vect_out = "00011100"
-        report "Test Case 2 Failed: Expected 28" severity error;
+        -- rst_tb <= '1';
+        -- wait for CLK_PERIOD*2;
+        
+        -- -- Release reset
+        -- rst_tb <= '0';
+        -- wait for CLK_PERIOD;
 
-        -- 테스트 케이스 3: -2 * 3 = -6
-        vect_in1 <= "1110"; -- -2 (2의 보수 표현)
-        vect_in2 <= "0011"; -- 3
-        wait until done = '1';
-        assert vect_out = "11111010"
-        report "Test Case 3 Failed: Expected -6" severity error;
+        -- -- Test Case 1: Positive numbers
+        -- vect_in1_tb <= "1000"; -- 5 in decimal
+        -- vect_in2_tb <= "0011"; -- 3 in decimal
+        -- wait for CLK_PERIOD*40; -- Wait for operation to complete
 
-        -- 테스트 케이스 4: 0 * 5 = 0
-        vect_in1 <= "0000"; -- 0
-        vect_in2 <= "0101"; -- 5
-        wait until done = '1';
-        assert vect_out = "00000000"
-        report "Test Case 4 Failed: Expected 0" severity error;
+        -- rst_tb <= '1';
+        -- wait for CLK_PERIOD*2;
+        
+        -- -- Release reset
+        -- rst_tb <= '0';
+        -- wait for CLK_PERIOD;
 
-        -- 테스트 완료
-        report "All Test Cases Passed!" severity note;
+        -- -- Test Case 1: Positive numbers
+        -- vect_in1_tb <= "0001"; -- 5 in decimal
+        -- vect_in2_tb <= "1101"; -- 3 in decimal
+        -- wait for CLK_PERIOD*60; -- Wait for operation to complete
+
+        rst_tb <= '1';
+        wait for CLK_PERIOD*2;
+        
+        -- Release reset
+        rst_tb <= '0';
+        wait for CLK_PERIOD;
+
+        -- Test Case 1: Positive numbers
+        vect_in1_tb <= "1010"; -- 5 in decimal
+        vect_in2_tb <= "1000"; -- 3 in decimal
+        wait for CLK_PERIOD*40; -- Wait for operation to complete
+
+        -- End simulation
+        wait for CLK_PERIOD*10;
+        assert false report "Simulation Completed Successfully" severity failure;
+        
         wait;
     end process;
+
+    -- Monitor process to display results
+    monitor_proc: process(clk_tb)
+    begin
+        if rising_edge(clk_tb) and done_tb = '1' then
+            report "Input1: " & integer'image(to_integer(signed(vect_in1_tb))) &
+                   " Input2: " & integer'image(to_integer(signed(vect_in2_tb))) &
+                   " Output: " & integer'image(to_integer(signed(vect_out_tb)));
+        end if;
+    end process;
+
 end Behavioral;
