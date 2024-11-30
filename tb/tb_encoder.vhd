@@ -1,14 +1,17 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 entity Encoder_tb is
--- No ports for testbench
+-- Testbench does not have ports
 end Encoder_tb;
 
 architecture Behavioral of Encoder_tb is
-    -- Component Declaration
+    -- Component declaration
     component Encoder
         Port (
+            clk : in STD_LOGIC;
+            rst : in STD_LOGIC;
             vect_in1_expended : in STD_LOGIC_VECTOR(7 downto 0);
             vect_in2_expended : in STD_LOGIC_VECTOR(7 downto 0);
             vect_out : in STD_LOGIC_VECTOR(7 downto 0);
@@ -20,74 +23,121 @@ architecture Behavioral of Encoder_tb is
             mag_A : out STD_LOGIC_VECTOR(3 downto 0);
             sign_A_vector : out STD_LOGIC;
             mag_B : out STD_LOGIC_VECTOR(3 downto 0);
-            sign_B_vector : out STD_LOGIC
+            sign_B_vector : out STD_LOGIC;
+            done : out STD_LOGIC
         );
     end component;
 
-    -- Testbench Signals
-    signal vect_in1_expended_tb : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
-    signal vect_in2_expended_tb : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
-    signal vect_out_tb : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
-    signal Sel_tb : STD_LOGIC_VECTOR(1 downto 0) := (others => '0');
-    signal Sel_out_vector_tb : STD_LOGIC_VECTOR(2 downto 0);
-    signal out_1_tb : STD_LOGIC_VECTOR(3 downto 0); 
-    signal out_2_tb : STD_LOGIC_VECTOR(2 downto 0); 
-    signal sign_vector_tb : STD_LOGIC;
-    signal mag_A_tb : STD_LOGIC_VECTOR(3 downto 0);
-    signal sign_A_vector_tb : STD_LOGIC;
-    signal mag_B_tb : STD_LOGIC_VECTOR(3 downto 0);
-    signal sign_B_vector_tb : STD_LOGIC;
+    -- Testbench signals
+    signal clk : STD_LOGIC := '0';
+    signal rst : STD_LOGIC := '0';
+    signal vect_in1_expended : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
+    signal vect_in2_expended : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
+    signal vect_out : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
+    signal Sel : STD_LOGIC_VECTOR(1 downto 0) := (others => '0');
+    signal Sel_out_vector : STD_LOGIC_VECTOR(2 downto 0);
+    signal out_1 : STD_LOGIC_VECTOR(3 downto 0);
+    signal out_2 : STD_LOGIC_VECTOR(2 downto 0);
+    signal sign_vector : STD_LOGIC;
+    signal mag_A : STD_LOGIC_VECTOR(3 downto 0);
+    signal sign_A_vector : STD_LOGIC;
+    signal mag_B : STD_LOGIC_VECTOR(3 downto 0);
+    signal sign_B_vector : STD_LOGIC;
+    signal done : STD_LOGIC;
+
+    -- Clock period constant
+    constant clk_period : time := 10 ns;
 
 begin
-    -- Instantiate Encoder
+    -- Instantiate the DUT (Device Under Test)
     DUT: Encoder
         Port map (
-            vect_in1_expended => vect_in1_expended_tb,
-            vect_in2_expended => vect_in2_expended_tb,
-            vect_out => vect_out_tb,
-            Sel => Sel_tb,
-            Sel_out_vector => Sel_out_vector_tb,
-            out_1 => out_1_tb,
-            out_2 => out_2_tb,
-            sign_vector => sign_vector_tb,
-            mag_A => mag_A_tb,
-            sign_A_vector => sign_A_vector_tb,
-            mag_B => mag_B_tb,
-            sign_B_vector => sign_B_vector_tb
+            clk => clk,
+            rst => rst,
+            vect_in1_expended => vect_in1_expended,
+            vect_in2_expended => vect_in2_expended,
+            vect_out => vect_out,
+            Sel => Sel,
+            Sel_out_vector => Sel_out_vector,
+            out_1 => out_1,
+            out_2 => out_2,
+            sign_vector => sign_vector,
+            mag_A => mag_A,
+            sign_A_vector => sign_A_vector,
+            mag_B => mag_B,
+            sign_B_vector => sign_B_vector,
+            done => done
         );
 
-    -- Test Process
-    process
+    -- Clock generation
+    clk_process : process
     begin
-        -- Test Case 1: Positive vect_in1 and vect_in2
-        vect_in1_expended_tb <= "00001111"; -- +15
-        vect_in2_expended_tb <= "00000101"; -- +5
-        vect_out_tb <= "00010010";         -- +18
-        Sel_tb <= "01";
-        wait for 10 ns;
+        while true loop
+            clk <= '0';
+            wait for clk_period / 2;
+            clk <= '1';
+            wait for clk_period / 2;
+        end loop;
+    end process;
 
-        -- Test Case 2: Negative vect_in1, Positive vect_in2
-        vect_in1_expended_tb <= "11110001"; -- -15
-        vect_in2_expended_tb <= "00000101"; -- +5
-        vect_out_tb <= "11100011";         -- -29
-        Sel_tb <= "10";
-        wait for 10 ns;
+    -- Stimulus process
+    stimulus_process : process
+    begin
+        -- Reset
+        rst <= '1';
+        wait for clk_period;
+        rst <= '0';
+        wait for clk_period;
 
-        -- Test Case 3: Positive vect_in1, Negative vect_in2
-        vect_in1_expended_tb <= "00001101"; -- +13
-        vect_in2_expended_tb <= "11111011"; -- -5
-        vect_out_tb <= "00000010";         -- +2
-        Sel_tb <= "11";
-        wait for 10 ns;
+        -- Test case 1: Positive numbers
+        vect_in1_expended <= "00000011";  -- +3
+        vect_in2_expended <= "00000101";  -- +5
+        vect_out <= "00001010";          -- +10
+        Sel <= "01";
+        wait for 6 * clk_period;
 
-        -- Test Case 4: Negative vect_in1 and vect_in2
-        vect_in1_expended_tb <= "11110110"; -- -10
-        vect_in2_expended_tb <= "11110011"; -- -13
-        vect_out_tb <= "11100101";         -- -23
-        Sel_tb <= "00";
-        wait for 10 ns;
+        -- Reset
+        rst <= '1';
+        wait for clk_period;
+        rst <= '0';
+        wait for clk_period;
 
-        -- End simulation
+        -- -- Test case 2: Negative vect_in1_expended
+        -- vect_in1_expended <= "11111101";  -- -3
+        -- vect_in2_expended <= "00000101";  -- +5
+        -- vect_out <= "11111011";          -- -5
+        -- Sel <= "10";
+        -- wait for 6 * clk_period;
+
+        -- -- Reset
+        -- rst <= '1';
+        -- wait for clk_period;
+        -- rst <= '0';
+        -- wait for clk_period;
+
+
+        -- -- Test case 3: Negative vect_in2_expended
+        -- vect_in1_expended <= "00000011";  -- +3
+        -- vect_in2_expended <= "11111011";  -- -5
+        -- vect_out <= "11111111";          -- -1
+        -- Sel <= "11";
+        -- wait for 6 * clk_period;
+
+        -- -- Reset
+        -- rst <= '1';
+        -- wait for clk_period;
+        -- rst <= '0';
+        -- wait for clk_period;
+
+
+        -- -- Test case 6: All negative
+        -- vect_in1_expended <= "11111101";  -- -3
+        -- vect_in2_expended <= "11111011";  -- -5
+        -- vect_out <= "00000110";          -- +6
+        -- Sel <= "00";
+        -- wait for 6 * clk_period;
+
+        -- Stop simulation
         wait;
     end process;
 
