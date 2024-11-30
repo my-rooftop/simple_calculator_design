@@ -154,12 +154,17 @@ begin
 
                 when 4 =>
                     -- Update accumulator with addition result
-                    acc_vect <= vect_add_buf;
-                    -- Shift operands
-                    vect_in1_done <= vect_in1_done(6 downto 0) & '0';
-                    vect_in2_done <= '0' & vect_in2_done(7 downto 1);
-                    count <= count + 1;
-                    state <= 3;
+                    if count < 3 then
+                        acc_vect <= vect_add_buf;
+                        -- Shift operands
+                        vect_in1_done <= vect_in1_done(6 downto 0) & '0';
+                        vect_in2_done <= '0' & vect_in2_done(7 downto 1);
+                        count <= count + 1;
+                        state <= 3;
+                    else
+                        count <= count + 1;
+                        state <= 3;
+                    end if;
 
                 when 5 =>
                     if sign = '1' then
