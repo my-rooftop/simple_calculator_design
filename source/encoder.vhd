@@ -33,8 +33,11 @@ architecture Behavioral of Encoder is
     signal vect_out_complement_in : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
     signal vect_out_complement_out : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
     signal vect_out_complement_buf : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
-    signal done_signal : STD_LOGIC := '0';  -- Internal signal for 'done'
-    signal state : INTEGER range 0 to 4 := 0;  -- State signal
+    signal done_signal : STD_LOGIC := '0';
+    signal state : INTEGER range 0 to 4 := 0;
+    signal decimal_value : INTEGER range 0 to 99 := 0;
+    signal tens_digit : INTEGER range 0 to 9 := 0;
+    signal ones_digit : INTEGER range 0 to 9 := 0;
 
     component two_complement
         Port (
@@ -77,7 +80,10 @@ begin
             mag_A <= (others => '0');
             mag_B <= (others => '0');
             done_signal <= '0';
-            state <= 0;  -- Reset state
+            state <= 0;
+            decimal_value <= 0;
+            tens_digit <= 0;
+            ones_digit <= 0;
         elsif rising_edge(clk) then
             case state is
                 when 0 =>
@@ -118,18 +124,22 @@ begin
                         sign_vector <= '0';
                     end if;
 
-                    -- Prepare to assign results
+                    -- Convert binary to decimal
+                    decimal_value <= to_integer(unsigned(vect_out_complement_buf(6 downto 0)));
                     state <= 3;
 
                 when 3 =>
+                    -- Calculate tens and ones digits
+                    tens_digit <= decimal_value / 10;
+                    ones_digit <= decimal_value mod 10;
+                    
                     -- Assign results to outputs
                     Sel_out_vector <= '1' & Sel(1 downto 0);
-                    out_1 <= vect_out_complement_buf(3 downto 0);
-                    out_2 <= vect_out_complement_buf(6 downto 4);
+                    out_1 <= std_logic_vector(to_unsigned(ones_digit, 4));
+                    out_2 <= std_logic_vector(to_unsigned(tens_digit, 3));
                     mag_A <= vect_in1_complement_buf(3 downto 0);
                     mag_B <= vect_in2_complement_buf(3 downto 0);
 
-                    -- Set done signal
                     done_signal <= '1';
                     state <= 4;
 
