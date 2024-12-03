@@ -58,42 +58,7 @@ begin
     -- Stimulus process
     stim_proc: process
     begin
-        -- -- Initialize inputs
-        -- rst_tb <= '1';
-        -- wait for CLK_PERIOD*2;
-        
-        -- -- Release reset
-        -- rst_tb <= '0';
-        -- wait for CLK_PERIOD;
 
-        -- -- Test Case 1: Positive numbers
-        -- vect_in1_tb <= "0101"; -- 5 in decimal
-        -- vect_in2_tb <= "0011"; -- 3 in decimal
-        -- wait for CLK_PERIOD*40; -- Wait for operation to complete
-
-        -- rst_tb <= '1';
-        -- wait for CLK_PERIOD*2;
-        
-        -- -- Release reset
-        -- rst_tb <= '0';
-        -- wait for CLK_PERIOD;
-
-        -- -- Test Case 1: Positive numbers
-        -- vect_in1_tb <= "1000"; -- 5 in decimal
-        -- vect_in2_tb <= "0011"; -- 3 in decimal
-        -- wait for CLK_PERIOD*40; -- Wait for operation to complete
-
-        -- rst_tb <= '1';
-        -- wait for CLK_PERIOD*2;
-        
-        -- -- Release reset
-        -- rst_tb <= '0';
-        -- wait for CLK_PERIOD;
-
-        -- -- Test Case 1: Positive numbers
-        -- vect_in1_tb <= "0001"; -- 5 in decimal
-        -- vect_in2_tb <= "1101"; -- 3 in decimal
-        -- wait for CLK_PERIOD*60; -- Wait for operation to complete
 
         rst_tb <= '1';
         wait for CLK_PERIOD*2;

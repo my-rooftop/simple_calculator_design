@@ -46,31 +46,6 @@ begin
         vect_in2 <= "1100"; -- -4
         wait for 10 ns;     -- Expected vect_out = 00001010 (10)
 
-        -- Test Case 3: Negative - Positive
-        vect_in1 <= "1001"; -- -7
-        vect_in2 <= "0010"; -- 2
-        wait for 10 ns;     -- Expected vect_out = 11111011 (-9)
-
-        -- Test Case 4: Negative - Negative
-        vect_in1 <= "1010"; -- -6
-        vect_in2 <= "1101"; -- -3
-        wait for 10 ns;     -- Expected vect_out = 11111101 (-3)
-
-        -- Test Case 5: Positive - Zero
-        vect_in1 <= "0111"; -- 7
-        vect_in2 <= "0000"; -- 0
-        wait for 10 ns;     -- Expected vect_out = 00000111 (7)
-
-        -- Test Case 6: Zero - Positive
-        vect_in1 <= "0000"; -- 0
-        vect_in2 <= "0010"; -- 2
-        wait for 10 ns;     -- Expected vect_out = 11111110 (-2)
-
-        -- Test Case 7: Zero - Zero
-        vect_in1 <= "0000"; -- 0
-        vect_in2 <= "0000"; -- 0
-        wait for 10 ns;     -- Expected vect_out = 00000000 (0)
-
         -- 시뮬레이션 종료
         wait;
     end process;

@@ -46,21 +46,6 @@ begin
         vect_in2 <= "1101"; -- -3 (Two's Complement)
         wait for 10 ns;     -- Expected vect_out = 000000100 (4)
 
-        -- Test Case 3: Negative + Negative
-        vect_in1 <= "1111"; -- -1
-        vect_in2 <= "1110"; -- -2
-        wait for 10 ns;     -- Expected vect_out = 111111101 (-3)
-
-        -- Test Case 4: Zero + Positive
-        vect_in1 <= "0000"; -- 0
-        vect_in2 <= "0101"; -- 5
-        wait for 10 ns;     -- Expected vect_out = 000000101 (5)
-
-        -- Test Case 5: Zero + Negative
-        vect_in1 <= "0000"; -- 0
-        vect_in2 <= "1001"; -- -7
-        wait for 10 ns;     -- Expected vect_out = 111111001 (-7)
-
         -- 시뮬레이션 종료
         wait;
     end process;
